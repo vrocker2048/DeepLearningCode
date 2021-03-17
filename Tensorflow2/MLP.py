@@ -51,9 +51,3 @@ for batch_index in range(num_batches):
         print("batch %d: loss %f" % (batch_index, loss.numpy()))
     grads = tape.gradient(loss, model.variables)
     optimizer.apply_gradients(grads_and_vars=zip(grads, model.variables))
-
-
-
-
-
-
