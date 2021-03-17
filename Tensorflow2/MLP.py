@@ -53,3 +53,7 @@ for batch_index in range(num_batches):
     optimizer.apply_gradients(grads_and_vars=zip(grads, model.variables))
 
 
+
+
+
+
