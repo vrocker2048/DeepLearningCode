@@ -20,7 +20,7 @@ def _decode_and_resize(filename, label):
     image_resized = tf.image.resize(image_decoded, [256, 256]) / 255.0
     return image_resized, label
 
-
+# train
 train_cat_filenames = tf.constant([train_cats_data_dir + filename for filename in os.listdir(train_cats_data_dir)])
 train_dog_filenames = tf.constant([train_dogs_data_dir + filename for filename in os.listdir(train_dogs_data_dir)])
 train_filenames = tf.concat([train_cat_filenames, train_dog_filenames], axis=-1)
@@ -56,3 +56,21 @@ model.compile(
 )
 
 model.fit(train_dataset, batch_size=4, epochs=5)
+
+
+# test
+valid_cat_filenames = tf.constant([valid_cats_data_dir + filename for filename in os.listdir(valid_cats_data_dir)])
+valid_dog_filenames = tf.constant([valid_dogs_data_dir + filename for filename in os.listdir(valid_dogs_data_dir)])
+valid_filenames = tf.concat([valid_cat_filenames, valid_dog_filenames], axis=-1)
+valid_labels = tf.concat([
+    tf.zeros(valid_cat_filenames.shape, dtype=tf.int32),
+    tf.ones(valid_dog_filenames.shape, dtype=tf.int32)],
+    axis=-1)
+
+valid_dataset = tf.data.Dataset.from_tensor_slices((valid_filenames, valid_labels))
+valid_dataset = valid_dataset.map(_decode_and_resize)
+valid_dataset = valid_dataset.batch(4)
+
+print("-" * 50)
+print(model.metrics_names)
+print(model.evaluate(valid_dataset))
